@@ -527,10 +527,34 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
 
-    heuristic = 1
+    food_list = foodGrid.asList()
 
-    return heuristic
-    # return 0 # Default to trivial solution
+    problem.heuristicInfo['wallCount'] = problem.walls.count()
+
+    if problem.isGoalState(state):
+        return 0
+
+    # we are going to find the distances inside the maze between agent and all the food
+    food_distance = []  # Create a list to record all distance between the agent and the food
+
+    # Record the times that we meet the maze conner. Ideally, the pacman should be finished once
+    # we meet all four corners.
+    time_to_conner = 0
+
+    for a_food in food_list:
+        food_distance.append(mazeDistance(position, a_food, problem.startingGameState))
+
+        if time_to_conner == 4:
+            break
+
+        time_to_conner += 1
+
+    return max(food_distance)
+
+    # heuristic = 1
+    #
+    # return heuristic
+    # # return 0 # Default to trivial solution
 
 
 class ClosestDotSearchAgent(SearchAgent):
