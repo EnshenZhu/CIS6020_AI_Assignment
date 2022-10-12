@@ -551,7 +551,9 @@ def foodHeuristic(state, problem):
 
         conner_visited += 1
 
-    return max(food_distance)
+    max_dist = max(food_distance)
+
+    return max_dist
 
     # heuristic = 1
     #
