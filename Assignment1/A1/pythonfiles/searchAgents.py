@@ -535,19 +535,21 @@ def foodHeuristic(state, problem):
         return 0
 
     # we are going to find the distances inside the maze between agent and all the food
-    food_distance = []  # Create a list to record all distance between the agent and the food
+
+    # Create a list to record all distance between the agent and the food
+    food_distance = []
 
     # Record the times that we meet the maze conner. Ideally, the pacman should be finished once
     # we meet all four corners.
-    time_to_conner = 0
+    conner_visited = 0
 
     for a_food in food_list:
         food_distance.append(mazeDistance(position, a_food, problem.startingGameState))
 
-        if time_to_conner == 4:
+        if conner_visited == 4:
             break
 
-        time_to_conner += 1
+        conner_visited += 1
 
     return max(food_distance)
 
