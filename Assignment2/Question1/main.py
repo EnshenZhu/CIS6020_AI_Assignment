@@ -5,18 +5,25 @@ from NonogramSolver import NonogramSolver
 from Question1.empty_the_folder import to_empty
 
 all_example_ls = {
+    # 5 * 5
     "example1": [
         [[3], [3], [1, 1], [3], [1, 1]],
         [[3], [1], [2, 2], [2], [3]]
     ],
+
+    # 5 * 5
     "example2": [
         [[2], [2], [2], [2, 2], [3]],
         [[2], [3], [1], [2, 2], [2, 1]]
     ],
+
+    # 10 * 5
     "example3": [
         [[2], [2, 1], [1, 1], [3], [1, 1], [1, 1], [2], [1, 1], [1, 2], [2]],
         [[2, 1], [2, 1, 3], [7], [1, 3], [2, 1]]
     ],
+
+    # 10 * 10
     "example4": [
         [[1, 2], [2], [1], [1], [2], [2, 4], [2, 6], [8], [1, 1], [2, 2]],
         [[2], [3], [1], [2, 1], [5], [4], [1, 4, 1], [1, 5], [2, 2], [2, 1]]
@@ -26,6 +33,10 @@ all_example_ls = {
          [1, 2, 2, 1, 1], [4, 1, 1, 3], [4, 2, 2], [3, 3, 1], [3, 3], [3], [2, 1]],
         [[2], [1, 2], [2, 3], [2, 3], [3, 1, 1], [2, 1, 1], [1, 1, 1, 2, 2], [1, 1, 3, 1, 3], [2, 6, 4], [3, 3, 9, 1],
          [5, 3, 2], [3, 1, 2, 2], [2, 1, 7], [3, 3, 2], [2, 4], [2, 1, 2], [2, 2, 1], [2, 2], [1], [1]]
+    ],
+    "example6": [
+        [[2], [2, 1], [1, 1], [3], [1, 1], [1, 1], [2], [1, 1], [1, 2], [2]],
+        [[2, 1], [2, 1, 3], [7], [1, 3], [2, 1]]
     ]
 }
 
@@ -47,7 +58,8 @@ def to_solve(example, output_route):
 
 if __name__ == "__main__":
     # to_solve(example="example1", output_route="output/example1")
-    # to_solve(example="example2", output_route="output/example2")
+    to_solve(example="example2", output_route="output/example2")
     # to_solve(example="example3", output_route="output/example3")
     # to_solve(example="example4", output_route="output/example4")
-    to_solve(example="example5", output_route="output/example5")
+    # to_solve(example="example5", output_route="output/example5")
+    # to_solve(example="example6", output_route="output/example6")
