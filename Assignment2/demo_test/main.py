@@ -1,4 +1,5 @@
-import NonogramSolver
+from NonogramSolver import NonogramSolver
 
-test_instance = NonogramSolver.plt
-test_instance
+if __name__ == "__main__":
+    NonogramSolver()
+    print("finished")
