@@ -44,6 +44,15 @@ def convert_to_pd(file_path):
     return map_dataframe
 
 
+def handle_row(pd_data):
+    for i in range(len(pd_data)):
+
+
+def text_generation(pd_data):
+    row_info_ls = handle_row(pd_data)
+    return
+
+
 def work(input_path, temp_path, output_path):
     rgb_to_black_and_white(file_location=input_path,
                            downsampled_save_path=temp_path,
@@ -56,5 +65,5 @@ def work(input_path, temp_path, output_path):
 if __name__ == "__main__":
     work(all_img_sample["sample1"]["input_img_path"], all_img_sample["sample1"]["downsample_img_path"],
          all_img_sample["sample1"]["output_bw_image_path"])
-    
+
     # work(input_img_path2, downsample_path2, output_bw_image_path2)
