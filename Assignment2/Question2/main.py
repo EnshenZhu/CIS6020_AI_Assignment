@@ -45,14 +45,55 @@ def convert_to_pd(file_path):
 
 
 def handle_row(pd_data):
-    row_ls=[]
-    for i in range(len(pd_data)):
-        i += 1
-    print("i=", i)
+    row_ls = []  # create an empty row ls to record all rows' profile
+    for row_idx in range(len(pd_data)):
+        minor_ls = []
+        counter = 0
+        for column_idx in range(len(pd_data.iloc[row_idx, :])):
+
+            if pd_data.iloc[row_idx, column_idx] == 1:
+
+                # when there are continuous one, the counter accumulates
+                counter += 1
+
+            elif pd_data.iloc[row_idx, column_idx] == 0 and pd_data.iloc[row_idx, column_idx - 1] == 1:
+
+                # when meet with zero after continues one, append the previous counter to the minor list
+                # and make the counter back to zero and
+                minor_ls.append(counter)
+                counter = 0
+
+        row_ls.append(minor_ls)
+
+    return row_ls
+
+
+def handle_column(pd_data):
+    colunn_ls = []  # create an empty column ls to record all columns' profile
+    for row_idx in range(len(pd_data)):
+        minor_ls = []
+        counter = 0
+        for column_idx in range(len(pd_data.iloc[row_idx, :])):
+
+            if pd_data.iloc[row_idx, column_idx] == 1:
+
+                # when there are continuous one, the counter accumulates
+                counter += 1
+
+            elif pd_data.iloc[row_idx, column_idx] == 0 and pd_data.iloc[row_idx, column_idx - 1] == 1:
+
+                # when meet with zero after continues one, append the previous counter to the minor list
+                # and make the counter back to zero and
+                minor_ls.append(counter)
+                counter = 0
+
+        colunn_ls.append(minor_ls)
+
+    return colunn_ls
 
 
 def text_generation(pd_data):
-    handle_row(pd_data)
+    print(handle_row(pd_data))
 
 
 def work(input_path, temp_path, output_path):
