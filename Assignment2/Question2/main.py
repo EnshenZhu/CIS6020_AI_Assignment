@@ -70,17 +70,17 @@ def handle_row(pd_data):
 
 def handle_column(pd_data):
     colunn_ls = []  # create an empty column ls to record all columns' profile
-    for row_idx in range(len(pd_data)):
+
+    for column_idx in range(len(pd_data.iloc[0, :])):
         minor_ls = []
         counter = 0
-        for column_idx in range(len(pd_data.iloc[row_idx, :])):
-
+        for row_idx in range(len(pd_data.iloc[:, column_idx])):
             if pd_data.iloc[row_idx, column_idx] == 1:
 
                 # when there are continuous one, the counter accumulates
                 counter += 1
 
-            elif pd_data.iloc[row_idx, column_idx] == 0 and pd_data.iloc[row_idx, column_idx - 1] == 1:
+            elif pd_data.iloc[row_idx, column_idx] == 0 and pd_data.iloc[row_idx - 1, column_idx] == 1:
 
                 # when meet with zero after continues one, append the previous counter to the minor list
                 # and make the counter back to zero and
@@ -93,7 +93,11 @@ def handle_column(pd_data):
 
 
 def text_generation(pd_data):
-    print(handle_row(pd_data))
+    row_profile = handle_row(pd_data)
+    column_profile = handle_column(pd_data)
+
+    print(len(row_profile))
+    print(len(column_profile))
 
 
 def work(input_path, temp_path, output_path):
