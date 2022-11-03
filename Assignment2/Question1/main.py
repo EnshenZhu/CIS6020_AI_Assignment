@@ -43,7 +43,7 @@ all_example_ls = {
 
 def to_solve(example, output_route):
     # empty the target directory firstly
-    to_empty(os.path.join("./output/", example))
+    to_empty(os.path.join("outputs/", example))
 
     ls = all_example_ls[example]
     the_row = ls[0]  # extract the row list
@@ -58,8 +58,8 @@ def to_solve(example, output_route):
 
 if __name__ == "__main__":
     # to_solve(example="example1", output_route="outputs/example1")
-    to_solve(example="example2", output_route="outputs/example2")
+    # to_solve(example="example2", output_route="outputs/example2")
     # to_solve(example="example3", output_route="outputs/example3")
     # to_solve(example="example4", output_route="outputs/example4")
-    # to_solve(example="example5", output_route="outputs/example5")
+    to_solve(example="example5", output_route="outputs/example5")
     # to_solve(example="example6", output_route="outputs/example6")

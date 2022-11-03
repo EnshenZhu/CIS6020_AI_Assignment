@@ -45,12 +45,14 @@ def convert_to_pd(file_path):
 
 
 def handle_row(pd_data):
+    row_ls=[]
     for i in range(len(pd_data)):
+        i += 1
+    print("i=", i)
 
 
 def text_generation(pd_data):
-    row_info_ls = handle_row(pd_data)
-    return
+    handle_row(pd_data)
 
 
 def work(input_path, temp_path, output_path):
@@ -59,11 +61,12 @@ def work(input_path, temp_path, output_path):
                            final_save_path=output_path)
 
     pixel_dataFrame = convert_to_pd(output_path)
-    print(pixel_dataFrame)
+    return pixel_dataFrame
 
 
 if __name__ == "__main__":
-    work(all_img_sample["sample1"]["input_img_path"], all_img_sample["sample1"]["downsample_img_path"],
-         all_img_sample["sample1"]["output_bw_image_path"])
+    matrix1 = work(all_img_sample["sample1"]["input_img_path"], all_img_sample["sample1"]["downsample_img_path"],
+                   all_img_sample["sample1"]["output_bw_image_path"])
+    text_generation(matrix1)
 
     # work(input_img_path2, downsample_path2, output_bw_image_path2)
