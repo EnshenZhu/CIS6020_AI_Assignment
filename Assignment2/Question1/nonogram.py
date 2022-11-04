@@ -47,7 +47,7 @@ all_example_ls = {
 }
 
 
-class solve_nonogram:
+class solveNonogram:
     def __init__(self,
                  row_profile=[],
                  column_profile=[],
@@ -75,7 +75,7 @@ class solve_nonogram:
         self.cols_possibilities = self.create_possibilities(column_profile, self.row_length)
 
         start_time = time.time()  # mark the start time
-        while not self.solved:
+        while self.solved == False:
 
             # step 2: Order indici by lowest
             self.lowest_rows = self.select_index_not_done(self.rows_possibilities, 1)
@@ -225,7 +225,7 @@ def to_solve(example, output_route):
     the_row = ls[0]  # extract the row list
     the_column = ls[1]  # extract the column list
 
-    solve_nonogram(row_profile=the_row, column_profile=the_column, savepath=output_route)
+    solveNonogram(row_profile=the_row, column_profile=the_column, savepath=output_route)
 
 
 if __name__ == "__main__":
