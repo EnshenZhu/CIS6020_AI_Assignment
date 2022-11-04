@@ -1,10 +1,55 @@
 import os
+import sys
 import time
 from itertools import combinations
-
+import os
+import shutil
 import matplotlib.pyplot as plt
 import numpy as np
 from IPython.display import clear_output
+
+protected_folder_location_list = [
+    '../.idea',
+    '../venv',
+    '../input_assets',
+    '../forbid'
+]
+
+all_example_ls = {
+    # 5 * 5
+    "example1": [
+        [[3], [3], [1, 1], [3], [1, 1]],
+        [[3], [1], [2, 2], [2], [3]]
+    ],
+
+    # 5 * 5
+    "example2": [
+        [[2], [2], [2], [2, 2], [3]],
+        [[2], [3], [1], [2, 2], [2, 1]]
+    ],
+
+    # 10 * 5
+    "example3": [
+        [[2], [2, 1], [1, 1], [3], [1, 1], [1, 1], [2], [1, 1], [1, 2], [2]],
+        [[2, 1], [2, 1, 3], [7], [1, 3], [2, 1]]
+    ],
+
+    # 10 * 10
+    "example4": [
+        [[1, 2], [2], [1], [1], [2], [2, 4], [2, 6], [8], [1, 1], [2, 2]],
+        [[2], [3], [1], [2, 1], [5], [4], [1, 4, 1], [1, 5], [2, 2], [2, 1]]
+    ],
+    "example5": [
+        [[3], [5], [3, 1], [2, 1], [3, 3, 4], [2, 2, 7], [6, 1, 1], [4, 2, 2], [1, 1], [3, 1], [6], [2, 7], [6, 3, 1],
+         [1, 2, 2, 1, 1], [4, 1, 1, 3], [4, 2, 2], [3, 3, 1], [3, 3], [3], [2, 1]],
+        [[2], [1, 2], [2, 3], [2, 3], [3, 1, 1], [2, 1, 1], [1, 1, 1, 2, 2], [1, 1, 3, 1, 3], [2, 6, 4], [3, 3, 9, 1],
+         [5, 3, 2], [3, 1, 2, 2], [2, 1, 7], [3, 3, 2], [2, 4], [2, 1, 2], [2, 2, 1], [2, 2], [1], [1]]
+    ],
+    "example6": [
+        [[2], [2, 1], [1, 1], [3], [1, 1], [1, 1], [2], [1, 1], [1, 2], [2]],
+        [[2, 1], [2, 1, 3], [7], [1, 3], [2, 1]]
+    ]
+}
 
 
 class NonogramSolver:
@@ -13,26 +58,28 @@ class NonogramSolver:
                  COLS_VALUES=[],
                  savepath=''):
         self.ROWS_VALUES = ROWS_VALUES
-        self.no_of_rows = len(ROWS_VALUES)
-        self.rows_changed = [0] * self.no_of_rows
-        self.rows_done = [0] * self.no_of_rows
+        self.num_of_rows = len(ROWS_VALUES)
+        self.rows_changed = [0] * self.num_of_rows
+        self.rows_done = [0] * self.num_of_rows
 
         self.COLS_VALUES = COLS_VALUES
-        self.no_of_cols = len(COLS_VALUES)
-        self.cols_changed = [0] * self.no_of_cols
-        self.cols_done = [0] * self.no_of_cols
+        self.num_of_columns = len(COLS_VALUES)
+        self.cols_changed = [0] * self.num_of_columns
+        self.cols_done = [0] * self.num_of_columns
 
         self.solved = False
-        self.shape = (self.no_of_rows, self.no_of_cols)
-        self.board = [[0 for c in range(self.no_of_cols)] for r in range(self.no_of_rows)]
+        self.shape = (self.num_of_rows, self.num_of_columns)
+        self.board = [[0 for c in range(self.num_of_columns)] for r in range(self.num_of_rows)]
         self.savepath = savepath
         if self.savepath != '': self.n = 0
 
         # step 1: Defining all possible solutions for every row and col
-        self.rows_possibilities = self.create_possibilities(ROWS_VALUES, self.no_of_cols)
-        self.cols_possibilities = self.create_possibilities(COLS_VALUES, self.no_of_rows)
+        self.rows_possibilities = self.create_possibilities(ROWS_VALUES, self.num_of_columns)
+        self.cols_possibilities = self.create_possibilities(COLS_VALUES, self.num_of_rows)
 
+        start_time = time.time()  # mark the start time
         while not self.solved:
+
             # step 2: Order indici by lowest
             self.lowest_rows = self.select_index_not_done(self.rows_possibilities, 1)
             self.lowest_cols = self.select_index_not_done(self.cols_possibilities, 0)
@@ -60,12 +107,18 @@ class NonogramSolver:
                                 self.rows_possibilities[ri] = self.remove_possibilities(self.rows_possibilities[ri], ci,
                                                                                         val)
                             clear_output(wait=True)
-                            self.display_board()
+                            # self.display_board()
                             if self.savepath != '':
                                 self.save_board()
                                 self.n += 1
                     self.update_done(row_ind, ind1)
             self.check_solved()
+
+        end_time = time.time()  # mark the end time
+        print("This example takes %.4f second to be finished."
+              % (end_time - start_time))
+
+        self.display_board()
 
     def create_possibilities(self, values, no_of_other):
         possibilities = []
@@ -112,9 +165,9 @@ class NonogramSolver:
 
     def save_board(self, increase_size=20):
         name = f'0000000{str(self.n)}'[-8:]
-        increased_board = np.zeros(np.array((self.no_of_rows, self.no_of_cols)) * increase_size)
-        for j in range(self.no_of_rows):
-            for k in range(self.no_of_cols):
+        increased_board = np.zeros(np.array((self.num_of_rows, self.num_of_columns)) * increase_size)
+        for j in range(self.num_of_rows):
+            for k in range(self.num_of_columns):
                 increased_board[j * increase_size: (j + 1) * increase_size,
                 k * increase_size: (k + 1) * increase_size] = self.board[j][k]
         plt.imsave(os.path.join(self.savepath, f'{name}.jpeg'), increased_board, cmap='Greys', dpi=1000)
@@ -139,3 +192,45 @@ class NonogramSolver:
     def check_solved(self):
         if 0 not in self.rows_done and 0 not in self.cols_done:
             self.solved = True
+
+
+def is_protected(test_folder_location):
+    if test_folder_location in protected_folder_location_list:
+        return True
+    else:
+        return False
+
+
+def to_empty(folder_location):
+    folder = folder_location
+
+    # identify if the target folder is protected, which should not be emptied
+    if is_protected(test_folder_location=folder):
+        print('%s folder should not be emptied' % folder)
+        return
+    else:
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
+def to_solve(example, output_route):
+    # empty the target directory firstly
+    to_empty(os.path.join("outputs/", example))
+
+    ls = all_example_ls[example]
+    the_row = ls[0]  # extract the row list
+    the_column = ls[1]  # extract the column list
+
+    NonogramSolver(ROWS_VALUES=the_row, COLS_VALUES=the_column, savepath=output_route)
+
+
+if __name__ == "__main__":
+    filename = sys.argv[1]
+    to_solve(example=filename, output_route="outputs/" + filename)
