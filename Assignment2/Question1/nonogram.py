@@ -43,40 +43,36 @@ all_example_ls = {
          [1, 2, 2, 1, 1], [4, 1, 1, 3], [4, 2, 2], [3, 3, 1], [3, 3], [3], [2, 1]],
         [[2], [1, 2], [2, 3], [2, 3], [3, 1, 1], [2, 1, 1], [1, 1, 1, 2, 2], [1, 1, 3, 1, 3], [2, 6, 4], [3, 3, 9, 1],
          [5, 3, 2], [3, 1, 2, 2], [2, 1, 7], [3, 3, 2], [2, 4], [2, 1, 2], [2, 2, 1], [2, 2], [1], [1]]
-    ],
-    "example6": [
-        [[2], [2, 1], [1, 1], [3], [1, 1], [1, 1], [2], [1, 1], [1, 2], [2]],
-        [[2, 1], [2, 1, 3], [7], [1, 3], [2, 1]]
     ]
 }
 
 
-class NonogramSolver:
+class solve_nonogram:
     def __init__(self,
-                 ROWS_VALUES=[],
-                 COLS_VALUES=[],
+                 row_profile=[],
+                 column_profile=[],
                  savepath=''):
 
         # handle the row profile
-        self.ROWS_VALUES = ROWS_VALUES
-        self.num_of_rows = len(ROWS_VALUES)
-        self.rows_changed = [0] * self.num_of_rows
-        self.rows_done = [0] * self.num_of_rows
+        self.row_profile = row_profile
+        self.row_length = len(row_profile)
+        self.rows_changed = self.row_length * [0]
+        self.rows_done = self.row_length * [0]
 
         # handle the column profile
-        self.COLS_VALUES = COLS_VALUES
-        self.num_of_columns = len(COLS_VALUES)
-        self.cols_changed = [0] * self.num_of_columns
-        self.cols_done = [0] * self.num_of_columns
+        self.COLS_VALUES = column_profile
+        self.num_of_columns = len(column_profile)
+        self.cols_changed = self.num_of_columns * [0]
+        self.cols_done = self.num_of_columns * [0]
 
         self.solved = False
-        self.shape = (self.num_of_rows, self.num_of_columns)
-        self.board = [[0 for c in range(self.num_of_columns)] for r in range(self.num_of_rows)]
+        self.shape = (self.row_length, self.num_of_columns)
+        self.board = [[0 for c in range(self.num_of_columns)] for r in range(self.row_length)]
         self.save_path = savepath
 
         # step 1: Defining all possible solutions for every row and col
-        self.rows_possibilities = self.create_possibilities(ROWS_VALUES, self.num_of_columns)
-        self.cols_possibilities = self.create_possibilities(COLS_VALUES, self.num_of_rows)
+        self.rows_possibilities = self.create_possibilities(row_profile, self.num_of_columns)
+        self.cols_possibilities = self.create_possibilities(column_profile, self.row_length)
 
         start_time = time.time()  # mark the start time
         while not self.solved:
@@ -166,8 +162,8 @@ class NonogramSolver:
 
     def save_board(self, increase_size=20):
         name = f'0000000{str(self.n)}'[-8:]
-        increased_board = np.zeros(np.array((self.num_of_rows, self.num_of_columns)) * increase_size)
-        for j in range(self.num_of_rows):
+        increased_board = np.zeros(np.array((self.row_length, self.num_of_columns)) * increase_size)
+        for j in range(self.row_length):
             for k in range(self.num_of_columns):
                 increased_board[j * increase_size: (j + 1) * increase_size,
                 k * increase_size: (k + 1) * increase_size] = self.board[j][k]
@@ -229,7 +225,7 @@ def to_solve(example, output_route):
     the_row = ls[0]  # extract the row list
     the_column = ls[1]  # extract the column list
 
-    NonogramSolver(ROWS_VALUES=the_row, COLS_VALUES=the_column, savepath=output_route)
+    solve_nonogram(row_profile=the_row, column_profile=the_column, savepath=output_route)
 
 
 if __name__ == "__main__":
