@@ -98,29 +98,25 @@ def find_rest_options(empty_space, groups, ones):
     return rest_option_ls
 
 
-# Explore all the possible options with the given rows and column profile
 def explore_options(values, no_of_other):
     options = []
 
     for single_value in values:
         groups = len(single_value)
-        no_empty = no_of_other - sum(single_value) - groups + 1
+
+        not_empty = no_of_other - sum(single_value) - groups + 1
         ones = [[1] * cell for cell in single_value]
-        raw_results = find_rest_options(no_empty, groups, ones)
+        raw_results = find_rest_options(not_empty, groups, ones)
         options.append(raw_results)
 
     return options
 
 
 def get_only_one_option(values):
-    return [(n, np.unique(i)[0]) for n, i in enumerate(np.array(values).T) if len(np.unique(i)) == 1]
+    return [(n, np.unique(idx)[0]) for n, idx in enumerate(np.array(values).T) if len(np.unique(idx)) == 1]
 
 
 def delete_conflict_options(all_options, idx, value_ls):
-    # option_ls=[]
-    # for idx,element in enumerate (all_options):
-    #     if element[idx]==value_ls:
-    #         option_ls.append(element[idx])
     return [option_ls for option_ls in all_options if option_ls[idx] == value_ls]
 
 
@@ -147,19 +143,23 @@ class SolveNonogram:
         self.columns_changed = self.column_num * [0]
         self.column_finished = self.column_num * [0]
 
-        self.min_option = None
+        self.sorted_options = None
         self.isSolved = False
         self.shape = (self.row_num, self.column_num)
         self.board = [[0 for c in range(self.column_num)] for r in range(self.row_num)]
         self.save_path = savepath
 
         if self.save_path != '':
-            self.n = 0
+            self.teration_idx = 0
 
         self.solving_work()
 
     def select_index_not_done(self, options, row_idx):
-        num_of_selections = [len(i) for i in options]
+
+        num_of_selections = []
+
+        for item in options:
+            num_of_selections.append(len(item))
 
         if row_idx:
             return [(idx, n, row_idx) for idx, n in enumerate(num_of_selections) if self.rows_finished[idx] == 0]
@@ -172,7 +172,7 @@ class SolveNonogram:
         plt.show()
 
     def save_board(self, increase_size=20):
-        name = f'0000000{str(self.n)}'[-8:]
+        name = f'0000000{str(self.teration_idx)}'[-8:]
         increased_board = np.zeros(np.array((self.row_num, self.column_num)) * increase_size)
         for j in range(self.row_num):
             for k in range(self.column_num):
@@ -180,29 +180,30 @@ class SolveNonogram:
                 k * increase_size: (k + 1) * increase_size] = self.board[j][k]
         plt.imsave(os.path.join(self.save_path, f'{name}.jpeg'), increased_board, cmap='Greys', dpi=1000)
 
-    def update_done(self, row_ind, idx):
-        if row_ind:
-            vals = self.board[idx]
-        else:
-            vals = [row[idx] for row in self.board]
-        if 0 not in vals:
-            if row_ind:
-                self.rows_finished[idx] = 1
-            else:
-                self.column_finished[idx] = 1
-
-    def check_done(self, row_ind, idx):
-        if row_ind:
+    def check_done(self, row_idx, idx):
+        if row_idx:
             return self.rows_finished[idx]
         else:
             return self.column_finished[idx]
 
-    def check_solved(self):
+    def should_terminate(self):
         if 0 not in self.rows_finished and 0 not in self.column_finished:
             self.isSolved = True
 
+    def update_finished(self, row_idx, idx):
+        if row_idx:
+            registry_value = self.board[idx]
+        else:
+            registry_value = [row[idx] for row in self.board]
+        if 0 not in registry_value:
+            if row_idx:
+                self.rows_finished[idx] = 1
+            else:
+                self.column_finished[idx] = 1
+
     def solving_work(self):
 
+        # Explore all the possible options with the given rows and column profile
         self.rows_options = explore_options(self.row_profile, self.column_num)
         self.columns_options = explore_options(self.column_profile, self.row_num)
 
@@ -211,36 +212,38 @@ class SolveNonogram:
 
             self.min_rows = self.select_index_not_done(self.rows_options, 1)
             self.min_columns = self.select_index_not_done(self.columns_options, 0)
+            self.sorted_options = sorted(self.min_rows + self.min_columns, key=lambda element: element[1])
 
-            self.min_option = sorted(self.min_rows + self.min_columns, key=lambda element: element[1])
-
-            for ind1, _, row_ind in self.min_option:
-                if not self.check_done(row_ind, ind1):
-                    if row_ind:
-                        values = self.rows_options[ind1]
+            for temp_idx, dummy_factor, row_idx_series in self.sorted_options:
+                if not self.check_done(row_idx_series, temp_idx):
+                    if row_idx_series:
+                        values = self.rows_options[temp_idx]
                     else:
-                        values = self.columns_options[ind1]
+                        values = self.columns_options[temp_idx]
                     same_ind = get_only_one_option(values)
-                    for ind2, val in same_ind:
-                        if row_ind:
-                            ri, ci = ind1, ind2
+                    for ind2, temp_value in same_ind:
+                        if row_idx_series:
+                            a_row_idx, a_column_idx = temp_idx, ind2
                         else:
-                            ri, ci = ind2, ind1
-                        if self.board[ri][ci] == 0:
-                            self.board[ri][ci] = val
-                            if row_ind:
-                                self.columns_options[ci] = delete_conflict_options(self.columns_options[ci], ri,
-                                                                                   val)
+                            a_row_idx, a_column_idx = ind2, temp_idx
+                        if self.board[a_row_idx][a_column_idx] == 0:
+                            self.board[a_row_idx][a_column_idx] = temp_value
+                            if row_idx_series:
+                                self.columns_options[a_column_idx] = delete_conflict_options(
+                                    self.columns_options[a_column_idx], a_row_idx,
+                                    temp_value)
                             else:
-                                self.rows_options[ri] = delete_conflict_options(self.rows_options[ri], ci,
-                                                                                val)
+                                self.rows_options[a_row_idx] = delete_conflict_options(self.rows_options[a_row_idx],
+                                                                                       a_column_idx,
+                                                                                       temp_value)
                             clear_output(wait=True)
-                            # self.display_board()
                             if self.save_path != '':
                                 self.save_board()
-                                self.n += 1
-                    self.update_done(row_ind, ind1)
-            self.check_solved()
+                                self.teration_idx += 1
+                    self.update_finished(row_idx_series, temp_idx)
+
+            # identify if we should terminate the exploring
+            self.should_terminate()
 
         end_time = time.time()  # mark the end time
         print("This example takes %.4f second to be finished."
