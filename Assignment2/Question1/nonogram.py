@@ -56,11 +56,14 @@ class NonogramSolver:
                  ROWS_VALUES=[],
                  COLS_VALUES=[],
                  savepath=''):
+
+        # handle the row profile
         self.ROWS_VALUES = ROWS_VALUES
         self.num_of_rows = len(ROWS_VALUES)
         self.rows_changed = [0] * self.num_of_rows
         self.rows_done = [0] * self.num_of_rows
 
+        # handle the column profile
         self.COLS_VALUES = COLS_VALUES
         self.num_of_columns = len(COLS_VALUES)
         self.cols_changed = [0] * self.num_of_columns
@@ -70,9 +73,6 @@ class NonogramSolver:
         self.shape = (self.num_of_rows, self.num_of_columns)
         self.board = [[0 for c in range(self.num_of_columns)] for r in range(self.num_of_rows)]
         self.save_path = savepath
-
-        if self.save_path != '':
-            self.n = 0
 
         # step 1: Defining all possible solutions for every row and col
         self.rows_possibilities = self.create_possibilities(ROWS_VALUES, self.num_of_columns)
