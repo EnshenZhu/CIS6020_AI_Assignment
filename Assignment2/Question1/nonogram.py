@@ -1,4 +1,3 @@
-import os
 import sys
 import time
 from itertools import combinations
@@ -70,8 +69,10 @@ class NonogramSolver:
         self.solved = False
         self.shape = (self.num_of_rows, self.num_of_columns)
         self.board = [[0 for c in range(self.num_of_columns)] for r in range(self.num_of_rows)]
-        self.savepath = savepath
-        if self.savepath != '': self.n = 0
+        self.save_path = savepath
+
+        if self.save_path != '':
+            self.n = 0
 
         # step 1: Defining all possible solutions for every row and col
         self.rows_possibilities = self.create_possibilities(ROWS_VALUES, self.num_of_columns)
@@ -85,7 +86,7 @@ class NonogramSolver:
             self.lowest_cols = self.select_index_not_done(self.cols_possibilities, 0)
             self.lowest = sorted(self.lowest_rows + self.lowest_cols, key=lambda element: element[1])
 
-            # step 3: Get only zeroes or only ones of lowest possibility
+            # step 3: Get only zeroes or only ones of the lowest possibility
             for ind1, _, row_ind in self.lowest:
                 if not self.check_done(row_ind, ind1):
                     if row_ind:
@@ -108,7 +109,7 @@ class NonogramSolver:
                                                                                         val)
                             clear_output(wait=True)
                             # self.display_board()
-                            if self.savepath != '':
+                            if self.save_path != '':
                                 self.save_board()
                                 self.n += 1
                     self.update_done(row_ind, ind1)
@@ -170,7 +171,7 @@ class NonogramSolver:
             for k in range(self.num_of_columns):
                 increased_board[j * increase_size: (j + 1) * increase_size,
                 k * increase_size: (k + 1) * increase_size] = self.board[j][k]
-        plt.imsave(os.path.join(self.savepath, f'{name}.jpeg'), increased_board, cmap='Greys', dpi=1000)
+        plt.imsave(os.path.join(self.save_path, f'{name}.jpeg'), increased_board, cmap='Greys', dpi=1000)
 
     def update_done(self, row_ind, idx):
         if row_ind:
