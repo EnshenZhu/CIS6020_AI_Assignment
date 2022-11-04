@@ -1,17 +1,19 @@
+import sys
+
 from PIL import Image
 import pandas as pd
 import numpy as np
 
 all_img_sample = {
-    "sample1": {
-        "input_img_path": r"./inputs/starcraft.png",
-        "downsample_img_path": r"./downsampled/starcraft_ds.png",
-        "output_bw_image_path": r"./outputs/starcraft_bw.png"
+    "originalimage1": {
+        "input_img_path": r"./properties/inputs/originalimage1.png",
+        "downsample_img_path": r"./properties/downsampled/originalimage1_DS.png",
+        "output_bw_image_path": r"./properties/outputs/puzzleImg1.png"
     },
-    "sample2": {
-        "input_img_path": r"./inputs/blizzard.png",
-        "downsample_img_path": r"./downsampled/blizzard_ds.png",
-        "output_bw_image_path": r"./outputs/blizzard_bw.png"
+    "originalimage2": {
+        "input_img_path": r"./properties/inputs/originalimage2.png",
+        "downsample_img_path": r"./properties/downsampled/originalimage2_DS.png",
+        "output_bw_image_path": r"./properties/outputs/puzzleImg2.png"
     }
 }
 
@@ -83,7 +85,7 @@ def handle_column(pd_data):
             elif pd_data.iloc[row_idx, column_idx] == 0 and pd_data.iloc[row_idx - 1, column_idx] == 1:
 
                 # when meet with zero after continues one, append the previous counter to the minor list
-                # and make the counter back to zero and
+                # and make the counter back to zero
                 minor_ls.append(counter)
                 counter = 0
 
@@ -110,8 +112,9 @@ def work(input_path, temp_path, output_path):
 
 
 if __name__ == "__main__":
-    matrix1 = work(all_img_sample["sample1"]["input_img_path"], all_img_sample["sample1"]["downsample_img_path"],
-                   all_img_sample["sample1"]["output_bw_image_path"])
-    text_generation(matrix1)
+    filename = sys.argv[1]
+    matrix = work(all_img_sample[filename]["input_img_path"], all_img_sample[filename]["downsample_img_path"],
+                  all_img_sample[filename]["output_bw_image_path"])
+    text_generation(matrix)
 
     # work(input_img_path2, downsample_path2, output_bw_image_path2)

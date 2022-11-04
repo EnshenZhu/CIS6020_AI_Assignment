@@ -2,7 +2,7 @@
 from PIL import Image
 
 # Open the image by specifying the image path.
-image_path = "./inputs/starcraft.png"
+image_path = "properties/inputs/originalimage2.png"
 image_file = Image.open(image_path)
 
 # the default
