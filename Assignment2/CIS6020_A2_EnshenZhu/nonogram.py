@@ -254,4 +254,4 @@ class SolveNonogram:
 
 if __name__ == "__main__":
     filename = sys.argv[1]
-    to_solve(example=filename, output_route="outputsImgPuzzle/" + filename)
+    to_solve(example=filename, output_route="outputs/" + filename)
